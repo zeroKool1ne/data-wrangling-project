@@ -1,0 +1,11 @@
+Ja, absolut! Slides als Orientierungsrahmen während du die Streamlit App zeigst — das ist sogar sehr
+   professionell. Z.B.:                                                                               
+                                                                                                      
+  - Slide 1: Title + dein Name                                                                        
+  - Slide 2: The Protagonist (Estimation-Ergebnisse zusammengefasst)                                  
+  - Slide 3: Business Questions Overview                                                              
+  - Slide 4: Key Findings                                                                             
+  - Slide 5: Summary + Further Analysis                                                               
+                                                            
+  Quasi die Kapitelüberschriften deiner Bedtime Story — und die Details zeigst du dann live in        
+  Streamlit.           
