@@ -9,7 +9,7 @@ st.set_page_config(
 )                                                                                                     
 
 pg = st.navigation([
-    st.Page("pages/home.py",                    title="The Story",          icon=":material/home:"),
+    st.Page("pages/Home.py",                    title="The Story",          icon=":material/home:"),
     st.Page("pages/1_📊_The_Protagonist.py",    title="The Protagonist",    icon=":material/person:"),        
     st.Page("pages/2_🔍_Business_Questions.py", title="The Hero Stories",   icon=":material/search:"),        
     st.Page("pages/3_📋_Summary.py",            title="Summary",            icon=":material/summarize:"),     
