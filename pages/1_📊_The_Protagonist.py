@@ -62,7 +62,7 @@ def calc_ci(data, confidence=0.95):
 # Define which metrics to estimate
 metrics = {
     "Sales per Transaction": df["Sales"],
-    "Profit per Transaction": df["Profit"],                                     
+    "Averge Profit per Transaction": df["Profit"],                                     
     "Profit Margin (%)": df["Profit Margin"],
     "Discount Rate (%)": df["Discount"] * 100       # convert decimal to %                                 
 }                                                                               

@@ -45,7 +45,8 @@ col4.metric("Products", df["Product"].nunique())
 divider()                                                                                                           
 
 st.markdown(""" 
-      <div style='max-width: 680px; margin: 0 auto;'>                                                                 
+      <div style='max-width: 1000           
+        px; margin: 0 auto;'>                                                                 
         <h3>The Story</h3>                                                                                          
             <p>Every dataset tells a story. Ours is about <strong>~10,000 AWS SaaS
             transactions</strong> spanning three global regions — EMEA, AMER, and APJ —                                 
