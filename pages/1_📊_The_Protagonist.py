@@ -3,13 +3,10 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go                                               
 from scipy import stats
+from utils.styles import apply_styles, divider
                                                                                   
-  # --- Page Config ---
-st.set_page_config(
-    page_title="The Protagonist",
-    page_icon="📊",
-    layout="wide"                                                               
-)
+# --- Page Config ---
+apply_styles()
                                                                                   
 # --- Load Data (cached to avoid reloading on every interaction) ---
 @st.cache_data
@@ -22,15 +19,34 @@ df = load_data()
 
                                                                                   
 # --- Page Header ---
-st.markdown("<h1 style='text-align: center;'>📊 The Protagonist</h1>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)                                                  
-st.markdown("##### Who is the typical AWS SaaS customer?")
-st.markdown(
-    "Using **95% confidence intervals** we estimate the true population "       
-    "parameters from our sample of {:,} transactions.".format(len(df))
+st.markdown(   
+    "<h1 style='text-align: center;'>"                                                                              
+    "<i class='bi bi-person-circle' style='margin-right: 10px;'></i>"                                               
+    "The Protagonist</h1>",                                                                                         
+    unsafe_allow_html=True                                                                                          
+  )            
+                                                  
+st.markdown( 
+    "<p style='font-size: 1.05rem; font-weight: bold;  color: #555; text-align: center;'>"                                                                     
+    "Who is the typical AWS SaaS customer?</p>",                                                                    
+      unsafe_allow_html=True
+  )       
+st.markdown(                                                                                                    
+    "Before we ask *why* some regions bleed money, we need to establish a baseline: "                               
+    "**who is the typical AWS SaaS customer?** "                                                                    
+    "Using **95% confidence intervals** on {:,} transactions, we estimate the true "                                
+    "population parameters — not just what we see in the data, but what is likely true "                            
+    "for all AWS SaaS customers globally.".format(len(df))                                                          
+)                                                                                                                   
+st.markdown(                                                                                                        
+    "Two things stand out immediately: the **profit CI is wide** ($24–$33), signalling "                            
+    "high variance in profitability across transactions. Yet the **discount CI is "                                 
+    "remarkably narrow** (15–16%), meaning discounts are applied in fixed, consistent "                             
+    "steps. A 12% profit margin is also far below the SaaS industry benchmark of "                                  
+    "60–80% — something is eating into margins."                                                                    
 )                                                                               
                   
-st.divider()                                                                    
+divider()                                                                    
                   
                                                                                   
 # --- Calculate Confidence Intervals ---
@@ -72,7 +88,7 @@ for i, (name, vals) in enumerate(ci_results.items()):
         st.metric(name, display)                                                
         st.caption(ci_text)
                                                                                   
-st.divider()    
+divider()    
 
                                                                                   
 # --- Forest Plot: visual overview of all CIs ---
@@ -94,7 +110,9 @@ for i, (name, vals) in enumerate(ci_results.items()):
         x=[vals["mean"]],
         y=[name],                                                               
         orientation="h",
-        marker_color=colors[i],                                                 
+        marker_color=colors[i],                                                                                             
+        marker_line_color="#ccc",                                                                                           
+        marker_line_width=1,                                                  
         error_x=dict(
             type="data",                                                        
             symmetric=False,
@@ -127,7 +145,7 @@ st.plotly_chart(fig, use_container_width=True)
    
                                                                                   
 # --- Interpretation ---
-st.divider()
+divider()
 st.markdown("### What does this tell us?")
 
 col1, col2 = st.columns(2)                                                      
@@ -152,9 +170,9 @@ with col2:
         """                                                                     
     )           
                                                                                   
-st.info(        
-    "💡 These estimates set the baseline. "
-    "Next, we test 5 hypotheses to find out what drives profitability.",        
-    icon="➡️"                                                                   
-)                                                                               
+st.info(                                                                                                            
+      "These estimates set the baseline. "                                                                            
+      "Next, we test 5 hypotheses to find out what drives profitability.",                                            
+      icon=":material/arrow_forward:"                                                                                 
+)                                                                             
                           

@@ -1,11 +1,9 @@
 import streamlit as st                                                          
-import pandas as pd                                                           
+import pandas as pd  
+from utils.styles import apply_styles, divider
+
 # --- Page Config ---
-st.set_page_config(
-    page_title="Summary",
-    page_icon="📋",                                                             
-    layout="wide"
-)                                                                               
+apply_styles()                                                                           
                                                                                 
 # --- Load Data ---
 @st.cache_data
@@ -18,10 +16,19 @@ df = load_data()
 
                                                                                   
 # --- Page Header ---
-st.title("📋 Summary")                                                          
-st.markdown("##### Key findings and recommendations")                         
+st.markdown(                                                                                                        
+    "<h1 style='text-align: center;'>"
+    "<i class='bi bi-clipboard-data' style='margin-right: 10px;'></i>"                                              
+    "Summary</h1>",                                                   
+    unsafe_allow_html=True                                                                                          
+)                         
+st.markdown(                                                                                                        
+    "<p style='font-size: 1.05rem; color: #555; text-align: center;'>"
+    "Key findings and recommendations</p>",                                                                         
+    unsafe_allow_html=True                                                                                          
+)                             
 
-st.divider()
+divider()
 
                                                                                   
 # --- Results Overview Table ---
@@ -64,7 +71,7 @@ st.dataframe(
     hide_index=True
 )
 
-st.divider()
+divider()
 
                                                                                   
 # --- Key Insights ---
@@ -79,7 +86,7 @@ with col1:
         "- Internet penetration (r = 0.07)\n"                                   
         "- Customer segment (F = 1.57, p = 0.21)\n\n"                           
         "External factors and customer type have no significant impact.",       
-        icon="📊"                                                               
+        icon=":material/bar_chart:"                                                               
     )                                                                           
                                                                                   
 with col2:                                                                      
@@ -89,10 +96,10 @@ with col2:
         "- Discount → Loss association (χ² = 2,123)\n"                          
         "- 100% of losses came from discounted transactions\n\n"                
         "**Discounting is the sole driver of losses.**",                        
-        icon="🔥"                                                               
+        icon=":material/warning:"                                                               
     )                                                                           
    
-st.divider()                                                                    
+divider()                                                                    
                                                                                 
 
 # --- Recommendations ---
@@ -105,7 +112,7 @@ with col1:
         "**1. Review APJ Discounts**\n\n"
         "APJ averages 27% discount — nearly 3x AMER. "                          
         "This is the biggest profitability leak.",                              
-        icon="🌏"                                                               
+        icon=":material/public:"                                                               
     )                                                                           
                                                                                 
 with col2:                                                                      
@@ -113,7 +120,7 @@ with col2:
         "**2. Set Discount Caps**\n\n"                                          
         "Every single loss-making transaction had a discount. "               
         "Implement maximum discount thresholds per region.",                    
-        icon="📉"
+        icon=":material/trending_down:"
     )                                                                           
                                                                                 
 with col3:                                                                      
@@ -121,10 +128,10 @@ with col3:
         "**3. Focus on Internal Levers**\n\n"
         "External market conditions don't matter — pricing "
         "strategy and discount governance do.",                                 
-        icon="🎯"                                                               
+        icon=":material/ads_click:"                                                               
     )                                                                           
                                                                                   
-st.divider()                                                                  
+divider()                                                                  
 
 
 # --- Data Sources ---

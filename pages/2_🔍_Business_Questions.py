@@ -5,13 +5,10 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go                                               
 from scipy import stats
+from utils.styles import apply_styles, divider
                                                                                   
 # --- Page Config ---
-st.set_page_config(
-    page_title="Business Questions",
-    page_icon="🔍",
-    layout="wide"
-)                                                                               
+apply_styles()                                                                               
    
 # --- Load Data ---                                                             
 @st.cache_data  
@@ -26,10 +23,19 @@ df = load_data()
 PASTEL = ["#a8d5e2", "#f9b4ab", "#fae3b0", "#b5ead7", "#d5b8ff"]
                                                                                   
 # --- Page Header ---
-st.title("🔍 The Hero Stories")                                                 
-st.markdown("##### Five business questions, tested with statistics")
+st.markdown(                                                                                                        
+    "<h1 style='text-align: center;'>"                                                                              
+    "<i class='bi bi-search' style='margin-right: 10px;'></i>"
+    "The Hero Stories</h1>",                                                                                        
+    unsafe_allow_html=True                                                                                          
+  )                                                                                                                   
+st.markdown(                                                                                                        
+    "<p style='font-size: 1.05rem; color: #555; text-align: center;'>"
+    "Five business questions, tested with statistics</p>",            
+      unsafe_allow_html=True                                                                                          
+  )                     
                                                                                   
-st.divider()    
+divider()    
 
 # BLOCK 2: Create Tabs
 # --- Tabs for each Business Question ---
@@ -77,18 +83,18 @@ with tab1:
         x=x_range,                                                              
         y=intercept + slope * x_range,
         mode="lines",
-        line=dict(color="#666", dash="dash"),
+        line=dict(color="#e07070"),
         name="Regression line",                                                 
         hovertemplate="Trend: $%{y:.2f}<extra></extra>"
     ))                                                                          
                   
-    fig.update_layout(                                                          
-    height=450,
-    plot_bgcolor="rgba(0,0,0,0)",
-    paper_bgcolor="rgba(0,0,0,0)",
-    font=dict(size=13)                                                      
-)
-                                                                                  
+    fig.update_layout(
+        height=450,                                                                                                 
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",                                                                              
+        font=dict(size=13)
+    )                                                          
+                                                                                                                                        
     st.plotly_chart(fig, use_container_width=True)
 
     # Results                                                                   
@@ -121,20 +127,34 @@ with tab2:
     # Pearson correlation
     r, p_value = stats.pearsonr(internet_data["Internet"],internet_data["Transactions"])                                                  
    
-    # Scatter plot                                                              
-    fig = px.scatter(
-        internet_data,
-        x="Internet",
-        y="Transactions",                                                       
-        hover_name="Country",
-        size="Transactions",                                                    
-        labels={
+     # Scatter plot                                                                                                  
+    fig = px.scatter(                                                                                               
+        internet_data,                                                                                              
+        x="Internet",                                                                                               
+        y="Transactions",
+        hover_name="Country",                                                                                       
+        size="Transactions",
+        labels={                                                                                                    
             "Internet": "Internet Penetration (%)",
             "Transactions": "Number of Transactions"
-        },                                                                      
+        },
         color_discrete_sequence=[PASTEL[1]]
-    )                                                                           
-                  
+    )                                                                                                               
+  
+    # Add regression line (same as notebook's sns.regplot)                                                          
+    slope, intercept, r_line, _, _ = stats.linregress(
+        internet_data["Internet"], internet_data["Transactions"]                                                    
+    )           
+    x_range = np.linspace(internet_data["Internet"].min(), internet_data["Internet"].max(), 100)                    
+    fig.add_trace(go.Scatter(                                                                                       
+        x=x_range,
+        y=intercept + slope * x_range,                                                                              
+        mode="lines",
+        line=dict(color="#e07070"),
+        name="Regression line",                                                                                     
+        hovertemplate="Trend: %{y:.0f}<extra></extra>"
+    ))  
+
     fig.update_layout(
         height=450,
         plot_bgcolor="rgba(0,0,0,0)",
@@ -156,6 +176,19 @@ with tab2:
         "regardless of internet access — market size and AWS presence "         
         "matter more than infrastructure.".format(r)                            
     )
+    st.markdown("**Outlier Inspection — Countries outside the 95% CI:**")                                           
+    outliers = pd.DataFrame({                                                                                       
+          "Country":              ["United States", "United Kingdom", "Japan", "France", "Canada", "Australia",       
+                                    "Mexico", "Germany"],                                                                                               
+          "Transactions":         [2001, 1141, 985, 587, 506, 492, 469, 383],                                         
+          "Internet Penetration": ["93.1%", "96.3%", "87.0%", "88.7%", "94.0%", "97.1%", "81.2%", "93.5%"]            
+      })                                                                                                              
+    st.dataframe(outliers, use_container_width=True, hide_index=True)                                               
+    st.markdown(                                                                                                    
+          "These 8 countries all exceed the 95% CI for transaction volume. "
+          "Notice: **Australia (97% internet) has fewer transactions than Mexico (81%)** — "                          
+          "market size and AWS presence drive volume, not connectivity."                                              
+      )    
 
 # Block 5: BQ3 — Discount EMEA vs AMER (t-Test)
 # --- BQ3: Discount Rates EMEA vs AMER (Independent t-Test) ---
@@ -191,7 +224,11 @@ with tab3:
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         font=dict(size=13)
-    )                                                                           
+    ) 
+    fig.update_traces(
+        marker_line_color="#ccc", 
+        marker_line_width=1
+    )                                                                          
    
     st.plotly_chart(fig, use_container_width=True)                              
                   
@@ -205,7 +242,20 @@ with tab3:
         "> **Conclusion:** EMEA applies significantly higher discounts than "   
         "AMER ({:.1f}% vs {:.1f}%, p < 0.001). APJ discounts even more "
         "aggressively at {:.1f}% — a critical profitability risk.".format(emea.mean(), amer.mean(), apj.mean())                                                                       
-    )  
+    ) 
+
+    st.markdown("**Regional discount means:**")                                                                     
+    region_means = pd.DataFrame({                                                                                   
+          "Region":          ["AMER", "EMEA", "APJ"],
+          "Avg Discount":    ["10.9%", "14.1%", "27.0%"],                                                             
+          "vs. AMER":        ["—", "+3.2pp", "+16.1pp"]                                                               
+      })                                                                                                              
+    st.dataframe(region_means, use_container_width=True, hide_index=True)                                           
+    st.markdown(                                                                                                    
+          "APJ is not included in the t-test (which compares EMEA vs. AMER), "                                        
+          "but its 27% average discount — nearly **3x AMER** — makes it the "                                         
+          "most critical profitability risk across all regions."                                                      
+    )        
 
 # Block 6: BQ4 — Profit by Segment (ANOVA)
 # --- BQ4: Profit by Segment (One-Way ANOVA) ---
@@ -272,7 +322,11 @@ with tab4:
 # Block 7: BQ5 — Discounts vs Losses (Chi² — der Climax!)
 # --- BQ5: Discounts → Negative Profit (Chi-Square Test) — THE CLIMAX ---
 with tab5:                                                                      
-    st.markdown("### 🔥 Do discounts eat into profit?")                         
+    st.markdown(                                                                                                        
+      "<h3><i class='bi bi-graph-down-arrow' style='margin-right: 8px; color: #e07070;'></i>"                         
+      "Do discounts eat into profit?</h3>",                                                                           
+    unsafe_allow_html=True                                                                                          
+    )                               
     st.markdown(
           "**H₀:** No association between discounts and negative profit  \n"      
           "**H₁:** Discounted transactions are more likely to result in losses"   
@@ -293,38 +347,42 @@ with tab5:
         # Count transactions by discount and profit status                      
         plot_data = df.groupby(["Has_Discount", "Profit_Status"]).size().reset_index(name="Count")                              
                                                                                   
-    fig = px.bar(                                                           
-        plot_data,
-        x="Has_Discount",
-        y="Count",
-        color="Profit_Status",
-        barmode="group",
-        color_discrete_map={
+        fig = px.bar(                                                           
+            plot_data,
+            x="Has_Discount",
+            y="Count",
+            color="Profit_Status",
+            barmode="group",
+            color_discrete_map={
             "Profit > 0": PASTEL[3],   # Mint for profitable                
             "Profit ≤ 0": PASTEL[1]    # Salmon for losses                  
-        },                                                                  
+            },                                                                  
         labels={                                                            
             "Has_Discount": "",
             "Count": "Number of Transactions",
             "Profit_Status": ""                                             
-        }
-    )                                                                       
+            }
+        )                                                                       
 
-    fig.update_layout(
-        height=400,
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(size=13),                                                 
-        legend=dict(
+        fig.update_layout(
+            height=400,
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            font=dict(size=13),                                                 
+            legend=dict(
             orientation="h",                                                
             yanchor="bottom",
             y=1.02,
             xanchor="right",
             x=1                                                             
+            )
         )
-    )                                                                       
+        fig.update_traces(
+            marker_line_color="#ccc", 
+            marker_line_width=1
+        )                                                                       
                   
-    st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
     with col_table:
         st.markdown("**Contingency Table:**")
@@ -341,7 +399,7 @@ with tab5:
         )                                                                       
                   
     # Results
-    st.divider()
+    divider()
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Chi² Statistic", f"{chi2:,.2f}")                               
     col2.metric("Degrees of Freedom", dof)
@@ -352,5 +410,5 @@ with tab5:
         "**100% of all 1,871 loss-making transactions had a discount applied. "
         "Zero non-discounted transactions resulted in a loss.** "               
         "Discounts are not just reducing profit — they are the sole driver of losses.",                                                                       
-        icon="🔥"
+        icon=":material/warning:"
     ) 
